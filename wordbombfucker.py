@@ -1,14 +1,15 @@
-str = '''                       _ _                     _      __            _             
-                      | | |                   | |    / _|          | |            
-__      _____  _ __ __| | |__   ___  _ __ ___ | |__ | |_ _   _  ___| | _____ _ __ 
-\ \ /\ / / _ \| '__/ _` | '_ \ / _ \| '_ ` _ \| '_ \|  _| | | |/ __| |/ / _ \ '__|
- \ V  V / (_) | | | (_| | |_) | (_) | | | | | | |_) | | | |_| | (__|   <  __/ |   
-  \_/\_/ \___/|_|  \__,_|_.__/ \___/|_| |_| |_|_.__/|_|  \__,_|\___|_|\_\___|_|   '''
+str = ''' _       _                  _                                     
+( )  _  ( )                ( )   /'\_/`\                          
+| | ( ) | |   _    _ __   _| |   |     |   _ _    ___  _ __   _   
+| | | | | | /'_`\ ( '__)/'_` |   | (_) | /'_` ) /'___)( '__)/'_`\ 
+| (_/ \_) |( (_) )| |  ( (_| |   | | | |( (_| |( (___ | |  ( (_) )
+`\___x___/'`\___/'(_)  `\__,_)   (_) (_)`\__,_)`\____)(_)  `\___/'
+                                                                  
+                                                                  '''
                                                                                   
 print(str)
-print("\nMade by @isarsindri")
-print("https://github.com/isarsindri")
-print("https://discord.gg/WFc3gKDGxB")
+print("\nMade by @mynamesrex99")
+print("https://github.com/mynamesrex99-dotcom")
 
 import tkinter as tk
 from tkinter import scrolledtext
@@ -17,31 +18,64 @@ import time
 from pynput.keyboard import Controller as KeyboardController
 import keyboard
 
+# --- COLORS ---
+BG = "#0e0e0e"
+PANEL = "#151515"
+ACCENT = "#4cffb0"
+TEXT = "#eaeaea"
+MUTED = "#8a8a8a"
+
 def sort_words(input_text):
     with open('word_list.txt', 'r') as file:
         words = [word.strip() for word in file.readlines()]
 
     filtered_words = [word for word in words if input_text.lower() in word.lower()]
-
     return sorted(filtered_words, key=lambda x: (len(x), x), reverse=True)
 
 class ResultWindow:
     def __init__(self, master):
         self.master = master
-        self.master.title("WordbombFucker")
 
-        # Creating and placing the text input box
-        self.new_word_entry = tk.Entry(self.master, width=30)
-        self.new_word_entry.pack(pady=10)
+        container = tk.Frame(master, bg=BG)
+        container.pack(fill=tk.BOTH, expand=True, padx=20, pady=10)
 
+        title = tk.Label(
+            container,
+            text="Word Macro",
+            font=("Segoe UI", 22, "bold"),
+            fg=ACCENT,
+            bg=BG
+        )
+        title.pack(pady=(0, 12))
+
+        self.new_word_entry = tk.Entry(
+            container,
+            font=("Segoe UI", 14),
+            width=30,
+            bg=PANEL,
+            fg=TEXT,
+            insertbackground=ACCENT,
+            relief="flat"
+        )
+        self.new_word_entry.pack(pady=6, ipady=6)
         self.new_word_entry.bind('<Return>', lambda event: self.sort_new_words())
 
-        self.result_text = scrolledtext.ScrolledText(self.master, width=70, height=20, wrap=tk.WORD)
-        self.result_text.pack(expand=True, fill=tk.BOTH)
+        self.result_text = scrolledtext.ScrolledText(
+            container,
+            font=("Consolas", 13),
+            wrap=tk.WORD,
+            width=70,
+            height=20,
+            bg=PANEL,
+            fg=TEXT,
+            insertbackground=ACCENT,
+            relief="flat",
+            highlightthickness=1,
+            highlightbackground="#222",
+            highlightcolor=ACCENT
+        )
+        self.result_text.pack(fill=tk.BOTH, expand=True, pady=12)
 
-        self.result_text.configure(font=("Arial", 15))
-
-        # Show default word list 
         self.update_content(sort_words(""))
 
     def update_content(self, sorted_words):
@@ -70,42 +104,56 @@ class ResultWindow:
         else:
             return
 
-        keyboard = KeyboardController()
-
-        # Setting the typing speed to 120 WPM
+        keyboard_controller = KeyboardController()
         words_per_minute = 120
         seconds_per_word = 60 / words_per_minute
 
         for char in autotype_word:
-            keyboard.press(char)
-            keyboard.release(char)
+            keyboard_controller.press(char)
+            keyboard_controller.release(char)
             time.sleep(seconds_per_word / len(autotype_word))
 
 def show_word_list(event=None):
     result_window.update_content(sort_words(result_window.new_word_entry.get()))
 
-# Creating the main window
 window = tk.Tk()
-window.title("WordbombFucker")
-window.configure(bg='white')
-window.geometry("600x680")  # Larger window size
+window.title("Word Macro")
+window.geometry("720x760")
+window.configure(bg=BG)
 
-# Creating and placing the button to trigger word finding
-button = tk.Button(window, text="Find Words", command=show_word_list)
-button.pack(pady=10)
+top_bar = tk.Frame(window, bg=BG)
+top_bar.pack(pady=10)
 
-# Creating an instance of the ResultWindow class
+button = tk.Button(
+    top_bar,
+    text="Find Words",
+    font=("Segoe UI", 12, "bold"),
+    bg=ACCENT,
+    fg="#000000",
+    activebackground="#3de39c",
+    activeforeground="#000000",
+    relief="flat",
+    padx=28,
+    pady=8,
+    command=show_word_list
+)
+button.pack()
+
 result_window = ResultWindow(window)
 
-extra_label = tk.Label(window, text="github.com/isarsindri", font=("Georgia", 20), bg='white')
-extra_label.pack(pady=5)
+footer = tk.Frame(window, bg=BG)
+footer.pack(pady=10)
 
-extra_label2 = tk.Label(window, text="https://discord.gg/WFc3gKDGxB", font=("Georgia, 10"), bg='white')
-extra_label2.pack(pady=5)
+tk.Label(
+    footer,
+    text="https://github.com/mynamesrex99-dotcom",
+    font=("Segoe UI", 11),
+    fg=MUTED,
+    bg=BG
+).pack()
+
 
 window.bind('<Return>', lambda event: show_word_list())
-
 keyboard.add_hotkey('F1', lambda: result_window.autotype_word('F1'))
 
-# Start the main window loop
 window.mainloop()
